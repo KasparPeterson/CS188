@@ -88,9 +88,9 @@ class ReflexAgent(Agent):
 
         """
         GHOST = -1000000
-        GHOST_CLOSE = -1000
-        KILL_GHOST = 100
-        KILL_GHOST_POSSIBLE = 10
+        GHOST_CLOSE = -10000
+        KILL_GHOST = 1000
+        KILL_GHOST_POSSIBLE = 100
         FOOD_CLOSER = 100
         FOOD = 1000
 
