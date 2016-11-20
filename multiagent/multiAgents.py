@@ -184,8 +184,51 @@ class MinimaxAgent(MultiAgentSearchAgent):
             Returns the total number of agents in the game
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        scores = []
+        legalMoves = gameState.getLegalActions()
+        for action in legalMoves:
+            scores.append(self.minimax(self.depth - 1,
+                                       False,
+                                       gameState.generateSuccessor(0, action), 1))
+        bestScore = max(scores)
+        bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
+        chosenIndex = random.choice(bestIndices) # Pick randomly among the best
 
+        return legalMoves[chosenIndex]
+
+    def minimax(self, depth, maximizingPlayer, gameState, agentIndex):
+        """
+        python autograder.py -t test_cases/q2/0-small-tree.test
+        """
+        if depth == 0:
+            depthZeroValue = self.evaluationFunction(gameState)
+            return depthZeroValue
+
+        legalActions = gameState.getLegalActions(agentIndex)
+        if not legalActions:
+            if gameState.isWin() or gameState.isLose():
+                return self.evaluationFunction(gameState)
+
+        if maximizingPlayer:
+            best_value = -99999999999
+
+            for action in legalActions:
+                value = self.minimax(depth, False, gameState.generateSuccessor(agentIndex, action), 1)
+                if value > best_value:
+                    best_value = value
+            return best_value
+        else:
+            best_value = 99999999999
+
+            for action in legalActions:
+                if agentIndex + 1 < gameState.getNumAgents():
+                    value = self.minimax(depth, False, gameState.generateSuccessor(agentIndex, action), agentIndex + 1)
+                else:
+                    value = self.minimax(depth - 1, True, gameState.generateSuccessor(agentIndex, action), 0)
+
+                if value < best_value:
+                    best_value = value
+            return best_value
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
