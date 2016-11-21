@@ -187,7 +187,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         scores = []
         legalMoves = gameState.getLegalActions()
         for action in legalMoves:
-            scores.append(self.minimax(self.depth - 1,
+            scores.append(self.minimax(self.depth,
                                        False,
                                        gameState.generateSuccessor(0, action), 1))
         bestScore = max(scores)
