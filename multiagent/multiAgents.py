@@ -366,7 +366,61 @@ def betterEvaluationFunction(currentGameState):
       DESCRIPTION: <write something here so we know what you did>
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Useful information you can extract from a GameState (pacman.py)
+    position = currentGameState.getPacmanPosition()
+    foods = currentGameState.getFood()
+    ghostStates = currentGameState.getGhostStates()
+    score = currentGameState.getScore()
+
+    if currentGameState.isLose():
+        return -float("inf")
+    elif currentGameState.isWin():
+        return float("inf")
+
+    # Gather Ghosts information
+    ghosts = scaredGhosts = []
+    for ghostState in ghostStates:
+        if ghostState.scaredTimer < 1:
+            ghosts.append(ghostState)
+        else:
+            scaredGhosts.append(ghostState)
+
+    closestGhost = float("inf")
+    closestScaredGhost = float("inf")
+
+    if ghosts:
+        for ghost in ghosts:
+            closestGhost = min(closestGhost, manhattanDistance(ghost.configuration.pos, position))
+    else:
+        closestGhost = 0
+
+    if scaredGhosts:
+        for ghost in scaredGhosts:
+            closestScaredGhost = min(closestScaredGhost, manhattanDistance(ghost.configuration.pos, position))
+    else:
+        closestScaredGhost = 0
+
+    # Pellets
+    pelletsCount = len(currentGameState.getCapsules())
+
+    # Food count
+    foodCount = len(foods.asList())
+
+    # Closest food
+    closestFood = float("inf")
+    if len(foods.asList()) == 0:
+        closestFood = 0
+    else:
+        for food in foods.asList():
+            closestFood = min(closestFood, manhattanDistance(food, position))
+
+    # score, closestGhost, closestScaredGhost, foodCount, closestFood
+    return score - \
+           5 * closestGhost - \
+           1 * closestScaredGhost - \
+           25 * pelletsCount - \
+           2 * foodCount - \
+           2 * closestFood
 
 
 def findClosestFoodManhattanDistance(pos, foodList):
@@ -379,4 +433,3 @@ def findClosestFoodManhattanDistance(pos, foodList):
 
 # Abbreviation
 better = betterEvaluationFunction
-
